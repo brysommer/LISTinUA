@@ -1,6 +1,21 @@
 import axios from 'axios';
 import { JSDOM } from 'jsdom';
 import { promises as fs } from 'fs';
+import XLSX from 'xlsx';
+
+
+const writeArrayToXLSX = (arrayData, xlsxFilePath) => {
+
+  const worksheet = XLSX.utils.aoa_to_sheet(arrayData);
+  
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+
+  XLSX.writeFile(workbook, xlsxFilePath);
+
+  
+  console.log("Масив записано в XLSX");
+}
 
 const extractText = (url) => {
   const startIndex = url.indexOf('http://list.in.ua/') + 'http://list.in.ua/'.length;
@@ -56,15 +71,42 @@ const getCompanyData = async(productLink) => {
 
 
  const jsonParse =  async() => {
+
+    let csvData = [[
+      'id',
+      'drug_id',
+      'drug_name',
+      'drug_producer',
+      'pharmacy_name',
+      'price',
+      'availability_status',
+      'updated_at',
+    ]];
+
     try {
       const jsonData = await fs.readFile('xmltojson.json', 'utf8');
       const jsObject = JSON.parse(jsonData);
       const linksArray = jsObject.urlset.url
       for (let index = 0; index < linksArray.length; index++) {
         const element = linksArray[index];
-        await getCompanyData(element.loc)
+        const company = await getCompanyData(element.loc);
+
+        csvData.push([
+          company.name,
+          company.address,
+          company.phone,
+          company.rating,
+          company.priceRange,
+          company.link,
+          company.category,
+        ])
+  
         
       }
+        
+      
+      writeArrayToXLSX(csvData, 'listKiev.xlsx')
+
     } catch (error) {
       throw error;
     }
