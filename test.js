@@ -34,6 +34,8 @@ const processProductElements = async (htmlString, productLink) => {
     const document = dom.window.document;
   
     const scriptElements = document.querySelectorAll('script[type="application/ld+json"]');
+
+    
     
     for (const scriptElement of scriptElements) {
 
@@ -90,6 +92,8 @@ const getCompanyData = async(productLink) => {
       for (let index = 0; index < linksArray.length; index++) {
         const element = linksArray[index];
         const company = await getCompanyData(element.loc);
+
+        if(!company) continue;
 
         csvData.push([
           company.name,
