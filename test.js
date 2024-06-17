@@ -66,7 +66,6 @@ const getCompanyData = async(productLink) => {
       return result;
     } catch (error) {
       console.error('Помилка при отриманні данних за посиланням:', productLink, error);
-      throw error;
     }
   }
 
@@ -111,7 +110,6 @@ const getCompanyData = async(productLink) => {
       writeArrayToXLSX(csvData, 'listKiev.xlsx')
 
     } catch (error) {
-      throw error;
     }
   }
 
