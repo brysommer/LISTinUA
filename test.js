@@ -34,7 +34,7 @@ const processProductElements = async (htmlString, productLink) => {
     const document = dom.window.document;
   
     const scriptElements = document.querySelectorAll('script[type="application/ld+json"]');
-
+    if (!scriptElements) return;
     
     
     for (const scriptElement of scriptElements) {
@@ -63,7 +63,6 @@ const getCompanyData = async(productLink) => {
     try {
       const response = await axios.get(productLink);
       const result = await processProductElements(response.data, productLink);
-      console.log(result);
       return result;
     } catch (error) {
       console.error('Помилка при отриманні данних за посиланням:', productLink, error);
